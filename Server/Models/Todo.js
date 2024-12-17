@@ -5,6 +5,7 @@ const TodoSchema = new mongoose.Schema({
     isComplete: { type: Boolean, default: false },
     created_at: { type: Date, default: Date.now },
     updated_at: { type: Date, default: Date.now },
+    deadline: { type: Date }
 })
 
 const TodoModel = mongoose.model("todos",TodoSchema)
