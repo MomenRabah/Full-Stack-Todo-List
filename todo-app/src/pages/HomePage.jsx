@@ -19,6 +19,7 @@ function HomePage() {
         if (content) {
             addTodo({content, deadline: deadline ? deadline.toISOString().split('T')[0] : null})
             inputRef.current.value = '';
+            setDeadline(null)
         }
     }
 
