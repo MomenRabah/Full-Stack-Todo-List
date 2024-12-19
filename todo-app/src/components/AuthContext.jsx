@@ -1,12 +1,13 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useEffect } from 'react';
 import supabase from '../api/supabaseClient';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
 const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useLocalStorage('user', null);
 
   useEffect(() => {
     const getSession = async () => {
@@ -23,7 +24,7 @@ export const AuthProvider = ({ children }) => {
     return () => {
       subscription?.unsubscribe();
     };
-  }, []);
+  }, [setUser]);
 
   const logIn = async (email, password) => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
