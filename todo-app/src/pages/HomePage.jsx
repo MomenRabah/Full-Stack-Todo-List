@@ -6,37 +6,21 @@ import axiosInstance from '../api/axios';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { useAuth } from '../components/AuthContext';
+import { useAddTodo } from '../hooks/useTodoQueries';
 
 function HomePage() {
-    const queryClient = useQueryClient();
+
     const {logOut} = useAuth()
     const inputRef = useRef()
     const [deadline, setDeadline] = useState(null);
-    
-  const addTodoMutation = useMutation(
-    async (newTodo) => {
-      const response = await axiosInstance.post('/todos', newTodo);
-      return response.data;
-    },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries('todos');
-        queryClient.invalidateQueries('todoCounts');
-        setDeadline(null);
-      }
+    const {mutate: addTodo} = useAddTodo()
+    const addTask = () => {
+        const content = inputRef.current.value.trim();
+        if (content) {
+            addTodo({content, deadline: deadline ? deadline.toISOString().split('T')[0] : null})
+            inputRef.current.value = '';
+        }
     }
-  );
-
-  const addTask = () => {
-    const content = inputRef.current.value.trim();
-    if (content) {
-        addTodoMutation.mutate({ 
-            content,
-            deadline: deadline ? deadline.toISOString().split('T')[0] : null
-        });
-        inputRef.current.value = '';
-    }
-  };
 
   return (
     <div className='bg-stone-200 grid py-4 min-h-screen'>

@@ -1,15 +1,9 @@
 
-import { useQuery } from 'react-query';
-import axiosInstance from '../api/axios';
+import { useFetchTodoCounts } from '../hooks/useTodoQueries';
 
 function Dashboard() {
 
-    const fetchTodoCounts = async () => {
-        const { data } = await axiosInstance.get('/todos/counts');
-        return data;
-      };
-
-    const { data, isLoading, isError, error } = useQuery('todoCounts', fetchTodoCounts);
+    const {data, isLoading, isError, error} = useFetchTodoCounts()
 
     if (isLoading) {
     return <div>Loading...</div>;
