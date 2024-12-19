@@ -4,13 +4,10 @@ const todoController = {
     getAllTodos: async (req, res) => {
         const { showCompleted } = req.query;
         try {
-            let query = {};
-            if (showCompleted === 'true') {
-                query.isComplete = true;
-            } else if (showCompleted === 'false') {
-                query.isComplete = false;
-            }
-            const todos = await TodoModel.find(query);
+            const todos = await TodoModel.find({
+                isComplete: showCompleted === 'true',
+                userId: req.user.id
+            });
             res.json(todos);
         } catch (err) {
             res.status(500).json({ message: 'Error fetching todos', error: err });
@@ -19,8 +16,8 @@ const todoController = {
 
     getTodoCounts: async (req, res) => {
         try {
-            const completedCount = await TodoModel.countDocuments({ isComplete: true });
-            const onGoingCount = await TodoModel.countDocuments({ isComplete: false });
+            const completedCount = await TodoModel.countDocuments({ isComplete: true, userId: req.user.id });
+            const onGoingCount = await TodoModel.countDocuments({ isComplete: false, userId: req.user.id });
             res.json({ completedCount, onGoingCount });
         } catch (err) {
             res.status(500).json({ message: 'Error fetching counts', error: err });
@@ -30,7 +27,8 @@ const todoController = {
     createTodo: async (req, res) => {
         const { content, deadline } = req.body;
         try {
-            const newTodo = await TodoModel.create({ content, deadline });
+            console.log(req.user.id)
+            const newTodo = await TodoModel.create({ content, deadline, userId: req.user.id });
             console.log('Task added to DB:', newTodo);
             res.json(newTodo);
         } catch (err) {

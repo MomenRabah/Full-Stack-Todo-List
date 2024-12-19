@@ -1,5 +1,7 @@
 {
   "dependencies": {
+    "@supabase/supabase-js": "^2.47.8",
+    "dotenv": "^16.4.7",
     "react-datepicker": "^7.5.0"
   }
 }
